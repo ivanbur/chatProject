@@ -68,7 +68,9 @@ function usernameEntered() {
 function sendMessage() {
 	if (event.keyCode == 13 && $("#userMessage").val() != "" && $("#userMessage").val() != " ") {
 		var userMessage = $("#userMessage").val();
-		messageId = database.ref("messageId").val();
+		database.ref("messageId").once("value").then(function(snapshot) {
+			messageId = snapshot.val();
+		});
 		console.log(userMessage);
 		$("#userMessage").val("");
 		database.ref("messages/" + messageId).set(username + ": " + userMessage);
