@@ -71,9 +71,6 @@ function sendMessage() {
 		database.ref("messageId").once("value").then(function(snapshot) {
 			messageId = snapshot.val();
 		});
-		database.ref("messages/").once("value").then(function(snapshot) {
-			messages = snapshot.val();
-		});
 		console.log(userMessage);
 		$("#userMessage").val("");
 		database.ref("messages/" + messageId).set(username + ": " + userMessage);
