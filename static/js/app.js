@@ -73,8 +73,7 @@ function sendMessage() {
 
 		database.ref("messages/" + messageId).set(username + ": " + userMessage);
 		
-		messageId++;
-		database.ref("messageId").set(messageId);
+		database.ref("messageId").set(messageId + 1);
 		// $("#theTextArea").html("");
 
 		// //$("#theTextArea").append("\n" + messages[messageId - 1])
@@ -93,6 +92,7 @@ function sendMessage() {
 database.ref("messages/").on("value", function(snapshot) {
 
 	messages.push(snapshot.val()[messageId]);
+	console.log("The messageId is: " + messageId);
 
 	$("#theTextArea").html(" ");
 	for (var i = 0; i < messages.length; i++) {
@@ -102,4 +102,9 @@ database.ref("messages/").on("value", function(snapshot) {
 	$("#theTextArea").animate({
     	scrollTop: $("#theTextArea").get(0).scrollHeight
 	}, 0.0000001);
+	console.log("The messageId is: " + messageId);
+})
+
+database.ref("messageId").on("value", function(snapshot) {
+	messageId = snapshot.val();
 })
