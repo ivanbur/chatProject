@@ -46,8 +46,7 @@ function usernameEntered() {
 		if (messages == null) {
 			messages = ["ADMIN: Welcome to the start of a new chat!"];
 			database.ref("messages/" + messageId).set("ADMIN: Welcome to the start of a new chat!");
-			messageId++;
-			database.ref("messageId").set(messageId);
+			database.ref("messageId").set(messageId + 1);
 		}
 
 
