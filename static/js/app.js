@@ -85,7 +85,10 @@ function sendMessage() {
 			$("#theTextArea").append("\n" + messages[i]);
 			console.log("debug - " + messages[i]);
 		}
-		$("#theTextArea").scrollTop = $("#theTextArea").scrollHeight;
+		//$("#theTextArea").scrollTop($("#theTextArea").scrollHeight - $("#theTextArea").clientHeight);
+		$("#theTextArea").animate({
+    		scrollTop: $("#theTextArea").get(0).scrollHeight
+		}, 0.0000001);
 	}
 }
 
@@ -95,4 +98,7 @@ database.ref("messages/").on("value", function(snapshot) {
 		$("#theTextArea").append("\n" + messages[i]);
 		console.log("debug - " + messages[i]);
 	}
+	$("#theTextArea").animate({
+    	scrollTop: $("#theTextArea").get(0).scrollHeight
+	}, 0.0000001);
 })
