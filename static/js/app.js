@@ -45,7 +45,7 @@ function usernameEntered() {
 
 		if (messages == null) {
 			messages = ["ADMIN: Welcome to the start of a new chat!"];
-			database.ref("messages/" + messageId).set(username + ": " + userMessage);
+			database.ref("messages/" + messageId).set("ADMIN: Welcome to the start of a new chat!");
 			messageId++;
 			database.ref("messageId").set(messageId);
 		}
@@ -91,12 +91,13 @@ function sendMessage() {
 }
 
 database.ref("messages/").on("value", function(snapshot) {
-	messages.push(snapshot.val());
 
-	$("#theTextArea").html("");
+	messages.push(snapshot.val()[messageId]);
+
+	$("#theTextArea").html(" ");
 	for (var i = 0; i < messages.length; i++) {
 		$("#theTextArea").append("\n" + messages[i]);
-		console.log("debug - " + messages[i]);
+		console.log("debug - " + i + " - " + messages[i]);
 	}
 	$("#theTextArea").animate({
     	scrollTop: $("#theTextArea").get(0).scrollHeight
