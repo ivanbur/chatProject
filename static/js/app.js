@@ -55,11 +55,6 @@ function usernameEntered() {
 			$("#theTextArea").append("\n" + messages[i]);
 			console.log("debug - " + messages[i]);
 		}
-			
-
-		console.log(messages);
-
-		
 
 		$("#userMessage").focus();
 	}
@@ -68,31 +63,36 @@ function usernameEntered() {
 function sendMessage() {
 	if (event.keyCode == 13 && $("#userMessage").val() != "" && $("#userMessage").val() != " ") {
 		var userMessage = $("#userMessage").val();
+
 		database.ref("messageId").once("value").then(function(snapshot) {
 			messageId = snapshot.val();
+			console.log("The messageId is: " + snapshot.val());
 		});
-		console.log(userMessage);
+
 		$("#userMessage").val("");
+
 		database.ref("messages/" + messageId).set(username + ": " + userMessage);
-		database.ref("messages/" + messageId).on("value", function(snapshot) {
-			messages.push(snapshot.val());
-		});
+		
 		messageId++;
 		database.ref("messageId").set(messageId);
-		$("#theTextArea").html("");
-		//$("#theTextArea").append("\n" + messages[messageId - 1])
-		for (var i = 0; i < messages.length; i++) {
-			$("#theTextArea").append("\n" + messages[i]);
-			console.log("debug - " + messages[i]);
-		}
-		//$("#theTextArea").scrollTop($("#theTextArea").scrollHeight - $("#theTextArea").clientHeight);
-		$("#theTextArea").animate({
-    		scrollTop: $("#theTextArea").get(0).scrollHeight
-		}, 0.0000001);
+		// $("#theTextArea").html("");
+
+		// //$("#theTextArea").append("\n" + messages[messageId - 1])
+		// for (var i = 0; i < messages.length; i++) {
+		// 	$("#theTextArea").append("\n" + messages[i]);
+		// 	console.log("debug - " + messages[i]);
+		// }
+
+		// //$("#theTextArea").scrollTop($("#theTextArea").scrollHeight - $("#theTextArea").clientHeight);
+		// $("#theTextArea").animate({
+  //   		scrollTop: $("#theTextArea").get(0).scrollHeight
+		// }, 0.0000001);
 	}
 }
 
 database.ref("messages/").on("value", function(snapshot) {
+	messages.push(snapshot.val());
+
 	$("#theTextArea").html("");
 	for (var i = 0; i < messages.length; i++) {
 		$("#theTextArea").append("\n" + messages[i]);
