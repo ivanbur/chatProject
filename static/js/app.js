@@ -76,7 +76,7 @@ function sendMessage() {
 
 		database.ref("messageId").set(messageId + 1);
 
-		database.ref("messages/" + messageId).set(username + ": " + userMessage);
+		database.ref("messages/" + messages.length).set(username + ": " + userMessage);
 		
 		
 		// $("#theTextArea").html("");
