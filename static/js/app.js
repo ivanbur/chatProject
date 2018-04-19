@@ -13,13 +13,35 @@ firebase.initializeApp(config);
 var username = "";
 var database = firebase.database();
 var messages = [];
-var messageId = 0;
-database.ref("messageId").once("value").then(function(snapshot) {
-	messageId = snapshot.val();
-});
+//var messageId = 0;
 
-database.ref("messages/").once("value").then(function(snapshot) {
-	messages = snapshot.val();
+
+
+$(document).ready(function() {
+	$("#enterMessageHere").hide();
+	$("#userMessage").hide();
+	$("#theTextArea").hide();
+	$("#sliderFontSize").hide();
+	$("#changeFontSizeText").hide();
+
+	// database.ref("messageId").once("value").then(function(snapshot) {
+	// 	messageId = snapshot.val();
+
+	// 	if (messageId == null) {
+	// 		messageId = 0;
+	// 	}
+	// });
+
+	database.ref("messages/").once("value").then(function(snapshot) {
+		messages = snapshot.val();
+
+		if (messages == null) {
+			messages = [];
+			database.ref("messages/0").set("ADMIN: Welcome to the start of a new chat!");
+			//database.ref("messageId").set(1);
+		}
+	});
+	
 });
 
 
@@ -27,32 +49,21 @@ function usernameEntered() {
 	if (event.keyCode == 13) {
 		username = $("#username").val();
 
-		$("#usernameEnter").remove();
-		$("button").remove();
-		$("br").remove();
-		$("body").html("Enter your message here: <input id = \"userMessage\" onkeydown = \"sendMessage()\"></input></br><textarea id = \"theTextArea\" style = \"width: 600px;height: 700px\"></textarea></br><input id=\"sliderFontSize\" onchange=\"changingSlider()\" type=\"range\" min=\"8\" max = \"20\" value = \"12\"/>");
-		
-		// for (var i = 0; i < messageId; i++) {
-		// 	database.ref("messages/" + messageId).once("value").then(function(snapshot) {
-		// 		$("body").append("</br>" + snapshot.val());
-		// 		console.log(snapshot.val());
-		// 	});
-		// }
+		$("#usernameEnter").hide();
 
-		if (messageId == null) {
-			messageId = 0;
-		}
+		$("#enterMessageHere").show();
+		$("#userMessage").show();
+		$("#theTextArea").show();
+		$("#sliderFontSize").show();
+		$("#changeFontSizeText").show();
 
-		if (messages == null) {
-			messages = ["ADMIN: Welcome to the start of a new chat!"];
-			database.ref("messages/" + messageId).set("ADMIN: Welcome to the start of a new chat!");
-			database.ref("messageId").set(messageId + 1);
-		}
+		if (messages.length != 1) {
 
+			for (var i = 0; i < messages.length; i++) {
+				$("#theTextArea").append("\n" + messages[i]);
+				console.log("debug - " + messages[i]);
+			}
 
-		for (var i = 0; i < messages.length; i++) {
-			$("#theTextArea").append("\n" + messages[i]);
-			console.log("debug - " + messages[i]);
 		}
 
 		$("#theTextArea").animate({
@@ -63,18 +74,19 @@ function usernameEntered() {
 	}
 }
 
+
 function sendMessage() {
 	if (event.keyCode == 13 && $("#userMessage").val() != "" && $("#userMessage").val() != " ") {
 		var userMessage = $("#userMessage").val();
 
-		database.ref("messageId").once("value").then(function(snapshot) {
-			messageId = snapshot.val();
-			console.log("#1 The messageId is: " + snapshot.val());
-		});
+		// database.ref("messageId").once("value").then(function(snapshot) {
+		// 	messageId = snapshot.val();
+		// 	console.log("#1 The messageId is: " + snapshot.val());
+		// });
 
 		$("#userMessage").val("");
 
-		database.ref("messageId").set(messageId + 1);
+		//database.ref("messageId").set(messageId + 1);
 
 		database.ref("messages/" + messages.length).set(username + ": " + userMessage);
 		
@@ -94,25 +106,19 @@ function sendMessage() {
 	}
 }
 
-// $(function() {
-// 	$("#sliderFontSize").slider( {
-// 		change: function() {
-// 				console.log("testing");
-// 			}
-// 	});
-// })
 
 function changingSlider() {
 	$("#theTextArea").css("font-size", $("#sliderFontSize").val() + "px");
 }
 
 
-
-
 database.ref("messages/").on("value", function(snapshot) {
 
-	messages.push(snapshot.val()[snapshot.val().length - 1]);
-	console.log("#2 The messageId is: " + messageId);
+	if (snapshot.val() != null) {
+		messages.push(snapshot.val()[snapshot.val().length - 1]);
+	}
+	
+	//console.log("#2 The messageId is: " + messageId);
 	console.log(messages);
 	console.log(snapshot.val());
 
@@ -124,9 +130,9 @@ database.ref("messages/").on("value", function(snapshot) {
 	$("#theTextArea").animate({
     	scrollTop: $("#theTextArea").get(0).scrollHeight
 	}, 0.0000001);
-	console.log("#3 The messageId is: " + messageId);
+	//console.log("#3 The messageId is: " + messageId);
 })
 
-database.ref("messageId").on("value", function(snapshot) {
-	messageId = snapshot.val();
-})
+// database.ref("messageId").on("value", function(snapshot) {
+// 	messageId = snapshot.val();
+// })
