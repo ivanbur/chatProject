@@ -13,7 +13,7 @@ firebase.initializeApp(config);
 var username = "";
 var database = firebase.database();
 var messages = [];
-//var messageId = 0;
+//var ` = 0;
 
 
 
@@ -59,6 +59,7 @@ function usernameEntered() {
 
 		if (messages.length != 1) {
 
+			$("#theTextArea").html(" ");
 			for (var i = 0; i < messages.length; i++) {
 				$("#theTextArea").append("\n" + messages[i]);
 				console.log("debug - " + messages[i]);
