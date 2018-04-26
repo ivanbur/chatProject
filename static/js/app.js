@@ -13,7 +13,17 @@ firebase.initializeApp(config);
 var username = "";
 var database = firebase.database();
 var messages = [];
-//var ` = 0;
+
+var today = new Date();
+var date = {
+	day: today.getDate(),
+	month: today.getMonth() + 1
+};
+
+database.ref("lastMonth").set(date.month);
+database.ref("lastDay").set(date.day);
+console.log(today);
+console.log(today.getDate());
 
 
 
@@ -25,13 +35,18 @@ $(document).ready(function() {
 	$("#changeFontSizeText").hide();
 	$("#numPeopleOnline").hide();
 
-	// database.ref("messageId").once("value").then(function(snapshot) {
-	// 	messageId = snapshot.val();
 
-	// 	if (messageId == null) {
-	// 		messageId = 0;
-	// 	}
-	// });
+	database.ref("lastMonth").once("value").then(function(snapshot) {
+		if (date.month > snapshot.val()) {
+			database.ref("messages/").remove();
+		}
+	})
+
+	database.ref("lastday").once("value").then(function(snapshot) {
+		if (date.day > snapshot.val() + 7) {
+			database.ref("messages/").remove();
+		}
+	})
 
 	database.ref("messages/").once("value").then(function(snapshot) {
 		messages = snapshot.val();
@@ -39,15 +54,12 @@ $(document).ready(function() {
 		if (messages == null) {
 			messages = [];
 			database.ref("messages/0").set("ADMIN: Welcome to the start of a new chat!");
-			//database.ref("messageId").set(1);
 		}
 	});
 	
 	database.ref("peopleOnline").once("value").then(function(snapshot) {
 		database.ref("peopleOnline").set(snapshot.val() + 1);
 	});
-
-
 
 });
 
@@ -96,30 +108,11 @@ function sendMessage() {
 	if (event.keyCode == 13 && $("#userMessage").val() != "" && $("#userMessage").val() != " ") {
 		var userMessage = $("#userMessage").val();
 
-		// database.ref("messageId").once("value").then(function(snapshot) {
-		// 	messageId = snapshot.val();
-		// 	console.log("#1 The messageId is: " + snapshot.val());
-		// });
-
 		$("#userMessage").val("");
 
-		//database.ref("messageId").set(messageId + 1);
 
 		database.ref("messages/" + messages.length).set(username + ": " + userMessage);
 		
-		
-		// $("#theTextArea").html("");
-
-		// //$("#theTextArea").append("\n" + messages[messageId - 1])
-		// for (var i = 0; i < messages.length; i++) {
-		// 	$("#theTextArea").append("\n" + messages[i]);
-		// 	console.log("debug - " + messages[i]);
-		// }
-
-		// //$("#theTextArea").scrollTop($("#theTextArea").scrollHeight - $("#theTextArea").clientHeight);
-		// $("#theTextArea").animate({
-  //   		scrollTop: $("#theTextArea").get(0).scrollHeight
-		// }, 0.0000001);
 	}
 }
 
@@ -135,7 +128,6 @@ database.ref("messages/").on("value", function(snapshot) {
 		messages.push(snapshot.val()[snapshot.val().length - 1]);
 	}
 	
-	//console.log("#2 The messageId is: " + messageId);
 	console.log(messages);
 	console.log(snapshot.val());
 
@@ -147,7 +139,6 @@ database.ref("messages/").on("value", function(snapshot) {
 	$("#theTextArea").animate({
     	scrollTop: $("#theTextArea").get(0).scrollHeight
 	}, 0.0000001);
-	//console.log("#3 The messageId is: " + messageId);
 });
 
 database.ref("peopleOnline").on("value", function(snapshot) {
