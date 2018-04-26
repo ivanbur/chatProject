@@ -20,12 +20,6 @@ var date = {
 	month: today.getMonth() + 1
 };
 
-database.ref("lastMonth").set(date.month);
-database.ref("lastDay").set(date.day);
-console.log(today);
-console.log(today.getDate());
-
-
 
 $(document).ready(function() {
 	$("#enterMessageHere").hide();
@@ -39,12 +33,14 @@ $(document).ready(function() {
 	database.ref("lastMonth").once("value").then(function(snapshot) {
 		if (date.month > snapshot.val()) {
 			database.ref("messages/").remove();
+			database.ref("lastMonth").set(date.month);
 		}
 	})
 
 	database.ref("lastday").once("value").then(function(snapshot) {
 		if (date.day > snapshot.val() + 7) {
 			database.ref("messages/").remove();
+			database.ref("lastDay").set(date.day);
 		}
 	})
 
