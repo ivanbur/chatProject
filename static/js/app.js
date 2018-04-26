@@ -37,8 +37,8 @@ $(document).ready(function() {
 		}
 	})
 
-	database.ref("lastday").once("value").then(function(snapshot) {
-		if (date.day > snapshot.val() + 7) {
+	database.ref("lastDay").once("value").then(function(snapshot) {
+		if (date.day >= snapshot.val() + 7) {
 			database.ref("messages/").remove();
 			database.ref("lastDay").set(date.day);
 		}
