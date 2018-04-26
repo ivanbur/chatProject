@@ -23,6 +23,7 @@ $(document).ready(function() {
 	$("#theTextArea").hide();
 	$("#sliderFontSize").hide();
 	$("#changeFontSizeText").hide();
+	$("#numPeopleOnline").hide();
 
 	// database.ref("messageId").once("value").then(function(snapshot) {
 	// 	messageId = snapshot.val();
@@ -42,7 +43,21 @@ $(document).ready(function() {
 		}
 	});
 	
+	database.ref("peopleOnline").once("value").then(function(snapshot) {
+		database.ref("peopleOnline").set(snapshot.val() + 1);
+	});
+
+
+
 });
+
+window.addEventListener("beforeunload", function (e) {
+
+	database.ref("peopleOnline").once("value").then(function(snapshot) {
+		database.ref("peopleOnline").set(snapshot.val() - 1);
+	});
+
+})
 
 
 function usernameEntered() {
@@ -56,6 +71,7 @@ function usernameEntered() {
 		$("#theTextArea").show();
 		$("#sliderFontSize").show();
 		$("#changeFontSizeText").show();
+		$("#numPeopleOnline").show();
 
 		if (messages.length != 1) {
 
@@ -132,8 +148,8 @@ database.ref("messages/").on("value", function(snapshot) {
     	scrollTop: $("#theTextArea").get(0).scrollHeight
 	}, 0.0000001);
 	//console.log("#3 The messageId is: " + messageId);
-})
+});
 
-// database.ref("messageId").on("value", function(snapshot) {
-// 	messageId = snapshot.val();
-// })
+database.ref("peopleOnline").on("value", function(snapshot) {
+	$("#numPeopleOnline").html("Number of people online: " + snapshot.val());
+});
