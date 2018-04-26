@@ -35,14 +35,19 @@ $(document).ready(function() {
 			database.ref("messages/").remove();
 			database.ref("lastMonth").set(date.month);
 		}
-	})
+	});
 
 	database.ref("lastDay").once("value").then(function(snapshot) {
 		if (date.day >= snapshot.val() + 7) {
 			database.ref("messages/").remove();
 			database.ref("lastDay").set(date.day);
 		}
-	})
+	});
+
+	database.ref("lastDay").once("value").then(function(snapshot) {
+		console.log(snapshot.val());
+		// don't delete this
+	});
 
 	database.ref("messages/").once("value").then(function(snapshot) {
 		messages = snapshot.val();
@@ -51,12 +56,20 @@ $(document).ready(function() {
 			messages = [];
 			database.ref("messages/0").set("ADMIN: Welcome to the start of a new chat!");
 		}
+
+		console.log("the messages are: " + messages);
 	});
 	
 	database.ref("peopleOnline").once("value").then(function(snapshot) {
 		database.ref("peopleOnline").set(snapshot.val() + 1);
 	});
 
+});
+
+functions.database.ref("messages/").onDelete(event=> {
+	messages = [];
+	database.ref("messages/0").set("ADMIN: Welcome to the start of a new chat!");
+	console.log("deleted stuff");
 });
 
 window.addEventListener("beforeunload", function (e) {
