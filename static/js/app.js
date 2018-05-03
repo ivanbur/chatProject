@@ -34,6 +34,8 @@ $(document).ready(function() {
 		if (date.month > snapshot.val()) {
 			database.ref("messages/").remove();
 			database.ref("lastMonth").set(date.month);
+			database.ref("lastDay").set(date.day);
+			window.location.reload(false);
 		}
 	});
 
@@ -41,12 +43,8 @@ $(document).ready(function() {
 		if (date.day >= snapshot.val() + 7) {
 			database.ref("messages/").remove();
 			database.ref("lastDay").set(date.day);
+			window.location.reload(false);
 		}
-	});
-
-	database.ref("lastDay").once("value").then(function(snapshot) {
-		console.log(snapshot.val());
-		// don't delete this
 	});
 
 	database.ref("messages/").once("value").then(function(snapshot) {
@@ -66,19 +64,13 @@ $(document).ready(function() {
 
 });
 
-functions.database.ref("messages/").onDelete(event=> {
-	messages = [];
-	database.ref("messages/0").set("ADMIN: Welcome to the start of a new chat!");
-	console.log("deleted stuff");
-});
-
 window.addEventListener("beforeunload", function (e) {
 
 	database.ref("peopleOnline").once("value").then(function(snapshot) {
 		database.ref("peopleOnline").set(snapshot.val() - 1);
 	});
 
-})
+});
 
 
 function usernameEntered() {
